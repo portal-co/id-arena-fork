@@ -97,7 +97,7 @@
 //! assert_eq!(ast_nodes[three], AstNode::Const(3));
 //! ```
 
-#![forbid(unsafe_code)]
+// #![forbid(unsafe_code)]
 #![deny(missing_debug_implementations)]
 #![deny(missing_docs)]
 // In no-std mode, use the alloc crate to get `Vec`.
@@ -117,9 +117,9 @@ use core::sync::atomic::{self, AtomicUsize};
 extern crate alloc;
 #[cfg(not(feature = "std"))]
 use alloc::vec::{self, Vec};
-use serde::de::{Visitor, SeqAccess};
+use serde::de::{SeqAccess, Visitor};
 use serde::ser::SerializeSeq;
-use serde::{Serialize, Deserialize, Serializer, Deserializer};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 #[cfg(feature = "std")]
 extern crate std;
@@ -249,6 +249,17 @@ impl<T> Id<T> {
     #[inline]
     pub fn index(&self) -> usize {
         self.idx
+    }
+
+    /// Cast the wrapped type in the arena
+    /// SAFETY: arena ids are kept, but this may be unsound
+    #[inline]
+    pub unsafe fn transmute<U>(&self) -> Id<U> {
+        Id::<U> {
+            idx: self.idx,
+            arena_id: self.arena_id,
+            _ty: PhantomData,
+        }
     }
 }
 
