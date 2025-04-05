@@ -102,7 +102,7 @@
 #![deny(missing_docs)]
 // In no-std mode, use the alloc crate to get `Vec`.
 #![no_std]
-#![cfg_attr(not(feature = "std"), feature(alloc))]
+// #![cfg_attr(not(feature = "std"), feature(alloc))]
 
 use core::cmp::Ordering;
 use core::fmt;
